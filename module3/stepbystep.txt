@@ -1,0 +1,16 @@
+#构建本地镜像
+mv ../module2/module2 ./module2_httpserver
+#编写 Dockerfile 将模块二作业编写的 httpserver 容器化
+docker build .
+
+#将镜像推送至 docker 官方镜像仓库
+docker login
+docker tag imageid hudyac/httpserver:v1.0
+docker push hudyac/httpserver:v1.0
+
+#通过 docker 命令本地启动 httpserver
+docker pull hudyac/httpserver
+docker run -d --name myhttpserver -P hudyac/httpserver:v1.0
+
+#通过 nsenter 进入容器查看 IP 配置
+nsenter -t $(docker inspect --format "{{.State.Pid}}" myhttpserver) -n ip addr
